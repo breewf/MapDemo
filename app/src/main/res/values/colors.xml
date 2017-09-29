@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="blue_color">#4183ff</color>
+    <color name="press_color">#e5e5e5</color>
+    <color name="black_cc">#cccccc</color>
+
+    <color name="black_33">#333333</color>
+    <color name="black_66">#666666</color>
+    <color name="black_88">#888888</color>
+    <color name="black_8c">#8c8c8c</color>
+    <color name="black_99">#999999</color>
+
+</resources>
