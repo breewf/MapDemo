@@ -1,10 +1,8 @@
 package com.ghy.mapdemo;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -27,14 +25,13 @@ import com.ghy.mapdemo.location.LocationClientImpl;
 import com.ghy.mapdemo.location.OnLocationListener;
 import com.ghy.mapdemo.location.entity.Location;
 
-import java.io.File;
-
 public class MainActivity extends AppCompatActivity {
 
     private MapView mMapView = null;
     private AMap aMap = null;
 
     private LocationClientImpl locationClient = null;
+    private Location mLocation;
 
     private TextView mTextViewRoad;
     private LinearLayout business_layout;
@@ -94,8 +91,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "开始导航", Toast.LENGTH_SHORT).show();
 
-//                openBaiduNavi(39.996901, 116.397972);
-                openGaoDeNavi(39.996901, 116.397972);
+                if (mLocation == null) {
+                    Toast.makeText(MainActivity.this, "定位失败，无法进行导航，请稍后重试", Toast.LENGTH_SHORT).show();
+                } else {
+//                    LocationMapUtils.openBaiduNavi(StoreMapActivity.this, mLocation.getLatitude(), mLocation.getLongitude(), "我的位置",
+//                            39.996901, 116.397972, "国家体育场", mLocation.getCity());
+                    LocationMapUtils.openGaoDeNavi(MainActivity.this, mLocation.getLatitude(), mLocation.getLongitude(), "我的位置",
+                            39.996901, 116.397972, "国家体育场");
+                }
 
             }
         });
@@ -193,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(Location location) {
+                mLocation = location;
                 Toast.makeText(MainActivity.this, "定位成功-->>" + location.getAddress() +
                         "--" + location.getLatitude() + "--" + location.getLongitude(), Toast.LENGTH_SHORT).show();
 
@@ -233,51 +237,6 @@ public class MainActivity extends AppCompatActivity {
         //设置是否显示定位小蓝点，用于满足只想使用定位，不想使用定位小蓝点的场景，设置false以后图面上不再有定位蓝点的概念，但是会持续回调位置信息。
         myLocationStyle.showMyLocation(true);
         aMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
-    }
-
-    /**
-     * 启动高德App进行导航
-     * sourceApplication 必填 第三方调用应用名称。如 amap
-     * poiname           非必填 POI 名称
-     * dev               必填 是否偏移(0:lat 和 lon 是已经加密后的,不需要国测加密; 1:需要国测加密)
-     * style             必填 导航方式(0 速度快; 1 费用少; 2 路程短; 3 不走高速；4 躲避拥堵；5 不走高速且避免收费；6 不走高速且躲避拥堵；7 躲避收费和拥堵；8 不走高速躲避收费和拥堵))
-     */
-    private void openGaoDeNavi(double lat, double lon) {
-        if (!isInstallMap("com.autonavi.minimap")) {
-            Toast.makeText(this, "未安装高德地图", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        String stringBuffer = "androidamap://navi?sourceApplication=" +
-                "yitu8_driver" + "&lat=" + lat +
-                "&lon=" + lon +
-                "&dev=" + 0 +
-                "&style=" + 0;
-        Intent intent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(stringBuffer));
-        intent.setPackage("com.autonavi.minimap");
-        startActivity(intent);
-    }
-
-    /**
-     * 打开百度地图导航客户端
-     * intent = Intent.getIntent("baidumap://map/navi?location=34.264642646862,108.95108518068&type=BLK&src=thirdapp.navi.you
-     * location 坐标点 location与query二者必须有一个，当有location时，忽略query
-     * query    搜索key   同上
-     * type 路线规划类型  BLK:躲避拥堵(自驾);TIME:最短时间(自驾);DIS:最短路程(自驾);FEE:少走高速(自驾);默认DIS
-     */
-    private void openBaiduNavi(double lat, double lon) {
-        if (!isInstallMap("com.baidu.BaiduMap")) {
-            Toast.makeText(this, "未安装百度地图", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        String stringBuffer = "baidumap://map/navi?location=" +
-                lat + "," + lon + "&type=DIS";
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(stringBuffer));
-        intent.setPackage("com.baidu.BaiduMap");
-        startActivity(intent);
-    }
-
-    private boolean isInstallMap(String packageName) {
-        return new File("/data/data/" + packageName).exists();
     }
 
     public static int dip2px(Context context, float dpValue) {
