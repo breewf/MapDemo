@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 public class LocationMapUtils {
 
-    private static final String APP_NAME = "CheZhuBaiTiao";
+    private static final String APP_NAME = "MapDemo";
     private static final String MAP_PACKAGE_NAME_GAODE = "com.autonavi.minimap";
     private static final String MAP_PACKAGE_NAME_BAIDU = "com.baidu.BaiduMap";
 
